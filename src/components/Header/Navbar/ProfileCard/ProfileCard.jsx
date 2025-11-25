@@ -17,7 +17,6 @@ function ProfileCard({ data }) {
 
   const handleClose = () => {
     setShowModal(false);
-    console.log(showModal);
   };
 
   const handleLogout = async () => {

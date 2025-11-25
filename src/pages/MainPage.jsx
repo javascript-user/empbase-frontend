@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 import Header from "../components/Header/Header.jsx";
 import Navbar from "../components/Header/Navbar/Navbar.jsx";
@@ -8,6 +9,7 @@ import DashBoardTab from "../components/Tab/DashBoardTab.jsx";
 import CreateEmployeeForm from "../components/Form/CreateEmployeeForm.jsx";
 import { fetchAdmin } from "../Services/admin-api.jsx";
 import EditEmployeeForm from "../components/Form/EditEmployeeForm.jsx";
+import InitialLoader from "../components/InitialLoader.jsx";
 
 function MainPage() {
   const navigate = useNavigate();
@@ -16,6 +18,9 @@ function MainPage() {
 
   const fetchData = useCallback(async () => {
     setLoadingState(true);
+    const slowTimer = setTimeout(() => {
+      toast.warning("Server waking up... please wait", { autoClose: 3000 });
+    }, 3000);
     try {
       const admin = await fetchAdmin();
       setData(admin);
@@ -24,6 +29,7 @@ function MainPage() {
         navigate("/login");
       }
     } finally {
+      clearTimeout(slowTimer);
       setLoadingState(false);
     }
   }, []);
@@ -33,11 +39,7 @@ function MainPage() {
   }, [fetchData]);
 
   if (loadingState) {
-    return (
-      <div className="flex items-center justify-center w-screen h-screen text-4xl font-bold text-center bg-black">
-        Loading...
-      </div>
-    );
+    return <InitialLoader />;
   }
 
   return (
